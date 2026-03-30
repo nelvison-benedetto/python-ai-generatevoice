@@ -8,19 +8,18 @@ import pyaudio
 import wave
 
 '''
-  Premi A  →  registra 15 secondi
-  Premi S  →  Whisper trascrive → TTS legge il testo ad alta voce
-  Premi Esc →  esci
-
+  premi A  ->  registra 15 secondi
+  premi S  ->  Whisper trascrive → TTS legge il testo ad alta voce
+  premi Esc ->  esci
 '''
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
-# Device
+#device
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using device: {device}")
 
-# Audio recording params
+#audio recording params
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
@@ -29,7 +28,7 @@ RECORD_SECONDS = 15
 WAVE_OUTPUT_FILENAME = "recorded_audio.wav"   # fix: era .mp3 ma wave scrive WAV raw
 OUTPUT_TTS_FILE = "output_audio.wav"
 
-# Models loaded lazily al primo utilizzo
+#models loaded lazily al primo utilizzo
 _whisper_model = None
 _tts_model = None
 
@@ -69,7 +68,7 @@ def record_audio(output_filename):
         stream.stop_stream()
         stream.close()
 
-        # fix: get_sample_size va chiamato PRIMA di terminate()
+        #get_sample_size va chiamato prima di terminate()!
         sample_size = audio.get_sample_size(FORMAT)
         audio.terminate()
 
@@ -94,9 +93,7 @@ def transcribe_and_speak():
     try:
         model = get_whisper_model()
 
-        # fix: uso transcribe() invece di decode() manuale:
-        #  - gestisce audio >30s con segmentazione automatica
-        #  - fp16 automatico in base al device (fix crash su CPU)
+        #uso transcribe() invece di decode() manuale!: gestisce audio >30s con segmentazione automatica & fp16 automatico in base al device (fix crash su CPU)
         print("Transcribing...")
         result = model.transcribe(WAVE_OUTPUT_FILENAME)
         text = result["text"].strip()
