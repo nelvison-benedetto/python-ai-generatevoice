@@ -7,6 +7,13 @@ import whisper
 import pyaudio
 import wave
 
+'''
+  Premi A  →  registra 15 secondi
+  Premi S  →  Whisper trascrive → TTS legge il testo ad alta voce
+  Premi Esc →  esci
+
+'''
+
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
 # Device
